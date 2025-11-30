@@ -281,7 +281,7 @@ footer{
 <body>
 <header>
     <div class="brand"><i class="fas fa-stethoscope"></i> VitalsConnect</div>
-    <nav style="margin-left:8px"><a class="active" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></nav>
+    <nav style="margin-left:8px"><a class="active" href="index.html"><i class="fas fa-tachometer-alt"></i> Homepage</a></nav>
 </header>
 
 <main>
@@ -456,7 +456,7 @@ function showDecision(dec){
   if (dec.motor) {
     motorActionBtn.style.display = 'inline-block';
     motorActionBtn.disabled = false;
-    motorActionBtn.innerHTML = `<i class="fas fa-bolt"></i> Start Motor ${dec.motor}`; // Added Icon
+    motorActionBtn.innerHTML = `<i class="fas fa-bolt"></i> Approve`; // Added Icon
     motorActionBtn.dataset.motor = dec.motor;
   } else {
     motorActionBtn.style.display = 'none';
