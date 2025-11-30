@@ -426,7 +426,7 @@ function validateForm(){
 function renderSnapshot(data){
   latestSnapshot = data;
   snapshotDiv.innerHTML = `
-    <div class="muted">Data fetched from ESP **${espIP}** at ${new Date().toLocaleTimeString()}</div>
+    <div class="muted">patient live data at ${new Date().toLocaleTimeString()}</div>
     <div id="snapshot-data">
         <div class="vitals-box">
             <span class="muted"><i class="fas fa-tint"></i> SpO₂</span>
@@ -522,7 +522,7 @@ repeatBtn.addEventListener('click', ()=>{
   startBtn.style.display = 'inline-block';
   repeatBtn.style.display = 'none';
   decisionDiv.style.display = 'none';
-  snapshotDiv.innerHTML = `<div style="text-align: center;"><i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i><div class="muted">Click **START** to fetch vitals from the ESP32 Kiosk.</div></div>`;
+  snapshotDiv.innerHTML = `<div style="text-align: center;"><i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i><div class="muted">Click **START** to live data</div></div>`;
   actionStatus.innerHTML = '';
   formMsg.innerHTML = 'Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor/action.';
 });
