@@ -178,7 +178,7 @@ input:focus, select:focus {
     padding-bottom: 10px;
     border-bottom: 1px dashed #eee;
 }
-#decision .result-row:last-of-type {
+.result-row:last-of-type {
     border-bottom: none;
 }
 #snapshot {
@@ -189,7 +189,7 @@ input:focus, select:focus {
     align-items: center;
     text-align: center;
 }
-#snapshot .small.muted {
+#snapshot .muted {
     font-size: 1.1em;
     color: var(--color-muted);
 }
@@ -281,7 +281,7 @@ footer{
 <body>
 <header>
     <div class="brand"><i class="fas fa-stethoscope"></i> VitalsConnect</div>
-    <nav style="margin-left:8px"><a class="active" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></nav>
+    <nav style="margin-left:8px"><a class="active" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></nav>
 </header>
 
 <main>
@@ -315,11 +315,11 @@ footer{
 
             <div class="actions">
                 <button id="startBtn" class="btn"><i class="fas fa-sync-alt"></i> START (Fetch once)</button>
-                <button id="repeatBtn" class="btn secondary" style="display:none"><i class="fas fa-redo"></i> Repeat</button>
+                <button id="repeatBtn" class="btn secondary" style="display:none"><i class="fas fa-redo"></i> Repeat Session</button>
                 <button id="exportBtn" class="btn secondary" title="Export logged sessions"><i class="fas fa-file-csv"></i> Export CSV</button>
             </div>
 
-            <div id="formMsg" class="small"><i class="fas fa-info-circle"></i> Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor.</div>
+            <div id="formMsg" class="small">Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor/action.</div>
 
             <h3 style="margin-top: 30px; margin-bottom: 10px; font-size: 1.1em; color: var(--color-dark); font-weight: 600;"><i class="fas fa-history"></i> Session Log</h3>
             <table class="tbl" id="logTable" style="display:none">
@@ -329,32 +329,32 @@ footer{
         </section>
 
         <aside class="card">
-            <h2><i class="fas fa-heartbeat" style="margin-right: 10px;"></i> Snapshot</h2>
+            <h2><i class="fas fa-heartbeat" style="margin-right: 10px;"></i> Real-Time Snapshot</h2>
 
             <div id="snapshot" style="min-height:160px">
-                <div style="text-align: center; color: var(--color-muted);">
-                    <i class="fas fa-thermometer-half fa-3x" style="margin-bottom: 15px;"></i>
-                    <div class="small muted">No snapshot yet.</div>
+                <div style="text-align: center;">
+                    <i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i>
+                    <div class="muted">Click **START** to fetch vitals from the ESP32 Kiosk.</div>
                 </div>
             </div>
 
             <div class="spacer"></div>
 
             <div id="decision" style="display:none">
-                 <h3 style="color: var(--color-dark); margin: 15px 0 10px 0; border-bottom: 1px dashed #eee; padding-bottom: 8px; font-size: 1.1em; font-weight: 600;"><i class="fas fa-clipboard-check"></i> AI Prediction & Action</h3>
+                <h3 style="color: var(--color-dark); margin: 15px 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 8px;"><i class="fas fa-clipboard-check"></i> AI Prediction & Action</h3>
                 <div class="result-row">
-                    <div>
-                        <div class="muted">Predicted Disease</div>
+                    <!-- <div>
+                        <div class="muted">Predicted Condition/Disease</div>
                         <div id="diseaseLabel" style="font-weight:800;font-size:16px;margin-top:4px; color: var(--color-primary);">-</div>
-                    </div>
+                    </div> -->
                     <div style="text-align:right">
-                        <div class="muted">Suggested Motor</div>
+                        <div class="muted">approve</div>
                         <div id="motorLabel" style="font-weight:800;font-size:16px;margin-top:4px; color: var(--color-dark);">-</div>
                     </div>
                 </div>
 
                 <div style="margin-top:20px">
-                    <button id="motorActionBtn" class="btn" style="width:100%;"><i class="fas fa-bolt"></i></button>
+                    <button id="motorActionBtn" class="btn" style="width:100%"></button>
                     <button id="stopMotorBtn" class="btn danger" style="width:100%;display:none;margin-top:10px"><i class="fas fa-power-off"></i> Stop Motor</button>
                 </div>
 
@@ -365,7 +365,7 @@ footer{
     </div>
 </main>
 
-<footer>VitalsConnect Dashboard • One-shot fetch • Motor A or B only • Local CSV log</footer>
+<footer>VitalsConnect Dashboard • Real-time health monitoring & automated dispensing system • Local CSV log enabled</footer>
 
 <script>
 /*
@@ -384,7 +384,7 @@ function decideDisease(data){
   if (data.spo2 != null && data.spo2 < 92) return {disease:"Hypoxia", motor:"A"};
   if (data.temperature != null && data.temperature > 38.0) return {disease:"Fever", motor:"B"};
   if (data.heartrate != null && data.heartrate > 110) return {disease:"Tachycardia", motor:"A"};
-  return {disease:"Normal", motor:"A"};
+  return {disease:"Normal", motor:"B"}; // Changed default motor for 'Normal' to 'B' to show the option
 }
 
 /* ---------- UI bindings ---------- */
@@ -426,37 +426,36 @@ function validateForm(){
 function renderSnapshot(data){
   latestSnapshot = data;
   snapshotDiv.innerHTML = `
-    <div class="muted">Values fetched from ESP (${espIP})</div>
-    <div style="margin-top:10px">
-        <div id="snapshot-data" style="display: flex; justify-content: space-around; width: 100%;">
-            <div class="vitals-box">
-                <span class="muted"><i class="fas fa-tint"></i> SpO₂</span>
-                <span class="stat">${data.spo2 === null ? '--' : data.spo2 + ' %'}</span>
-            </div>
-            <div class="vitals-box">
-                <span class="muted"><i class="fas fa-thermometer-half"></i> Temp.</span>
-                <span class="stat">${data.temperature === null ? '--' : data.temperature.toFixed(1) + ' °C'}</span>
-            </div>
-            <div class="vitals-box">
-                <span class="muted"><i class="fas fa-heart"></i> Heart Rate</span>
-                <span class="stat">${data.heartrate === null ? '--' : data.heartrate + ' bpm'}</span>
-            </div>
+    <div class="muted">patient live data at ${new Date().toLocaleTimeString()}</div>
+    <div id="snapshot-data">
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-tint"></i> SpO₂</span>
+            <span class="stat">${data.spo2 === null ? '--' : data.spo2 + ' %'}</span>
         </div>
-    </div>
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-thermometer-half"></i> Temp.</span>
+            <span class="stat">${data.temperature === null ? '--' : data.temperature.toFixed(1) + ' °C'}</span>
+        </div>
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-heart"></i> Heart Rate</span>
+            <span class="stat">${data.heartrate === null ? '--' : data.heartrate + ' bpm'}</span>
+        </div>
+    </div>
   `;
 }
 
 function showDecision(dec){
   decisionDiv.style.display = 'block';
   diseaseLabel.textContent = dec.disease;
-  motorLabel.textContent = dec.motor ? `Motor ${dec.motor}` : '-';
-  // Style the disease label based on risk (New)
-  diseaseLabel.style.color = (dec.disease === 'Normal') ? 'var(--color-ok)' : 'var(--color-danger)';
-  
+  motorLabel.textContent = dec.motor ? `Motor ${dec.motor} (Action)` : 'No Action';
+  
+  // Style the disease label based on risk
+  diseaseLabel.style.color = (dec.disease === 'Normal') ? var_color_ok : var_color_danger;
+  
   if (dec.motor) {
     motorActionBtn.style.display = 'inline-block';
     motorActionBtn.disabled = false;
-    motorActionBtn.innerHTML = `<i class="fas fa-bolt"></i> Start Motor ${dec.motor}`; // Added Icon
+    motorActionBtn.innerHTML = `<i class="fas fa-bolt"></i> Activate Motor ${dec.motor}`;
     motorActionBtn.dataset.motor = dec.motor;
   } else {
     motorActionBtn.style.display = 'none';
@@ -469,8 +468,8 @@ async function fetchOnce(){
   if (v) { alert(v); return; }
 
   startBtn.disabled = true;
-  startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...'; // Added Icon
-  formMsg.innerHTML = '<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Fetching a single snapshot from ESP — please wait...</div>'; // Styled message
+  startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+  formMsg.innerHTML = '<div class="status loading">Fetching a single snapshot from ESP — please wait...</div>';
 
   try {
     const res = await fetch(`http://${espIP}/data`, {cache:'no-store'});
@@ -505,7 +504,7 @@ async function fetchOnce(){
     // UI state
     startBtn.style.display = 'none';
     repeatBtn.style.display = 'inline-block';
-    formMsg.innerHTML = '<div class="status ok"><i class="fas fa-check-circle"></i> Snapshot taken. Review prediction and take motor action.</div>';
+    formMsg.innerHTML = '<div class="status ok"><i class="fas fa-check-circle"></i> Data received. Review prediction and take motor action.</div>';
 
   } catch (err) {
     console.error(err);
@@ -523,9 +522,9 @@ repeatBtn.addEventListener('click', ()=>{
   startBtn.style.display = 'inline-block';
   repeatBtn.style.display = 'none';
   decisionDiv.style.display = 'none';
-  snapshotDiv.innerHTML = `<div style="text-align: center; color: var(--color-muted);"><i class="fas fa-thermometer-half fa-3x" style="margin-bottom: 15px;"></i><div class="small muted">No snapshot yet.</div></div>`;
+  snapshotDiv.innerHTML = `<div style="text-align: center;"><i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i><div class="muted">Click **START** to live data</div></div>`;
   actionStatus.innerHTML = '';
-  formMsg.innerHTML = '<i class="fas fa-info-circle"></i> Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor.';
+  formMsg.innerHTML = 'Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor/action.';
 });
 
 // motor action
@@ -533,17 +532,17 @@ motorActionBtn.addEventListener('click', async ()=>{
   const motor = motorActionBtn.dataset.motor;
   if (!motor) return;
   motorActionBtn.disabled = true;
-  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Sending command to Motor ${motor}...</div>`; // Styled message
+  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Sending command to Motor ${motor}...</div>`;
   try {
     const res = await fetch(`http://${espIP}/motor${motor}`);
     if (!res.ok) throw new Error('Motor request failed: ' + res.status);
     const text = await res.text();
     lastMotor = motor;
-    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-check-circle"></i> Motor ${motor} started — ESP: ${text}</div>`; // Styled message
+    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-check-circle"></i> Motor ${motor} started — ESP: ${text}</div>`;
     stopMotorBtn.style.display = 'block';
   } catch (err) {
     console.error(err);
-    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to start motor ${motor}. Check network / ESP.</div>`; // Styled message
+    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to start motor ${motor}. Check network / ESP.</div>`;
   } finally {
     motorActionBtn.disabled = false;
   }
@@ -553,17 +552,17 @@ motorActionBtn.addEventListener('click', async ()=>{
 stopMotorBtn.addEventListener('click', async ()=>{
   if (!lastMotor) return;
   stopMotorBtn.disabled = true;
-  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Stopping Motor ${lastMotor}...</div>`; // Styled message
+  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Stopping Motor ${lastMotor}...</div>`;
   try {
     const res = await fetch(`http://${espIP}/stop`);
     if (!res.ok) throw new Error('Stop request failed: ' + res.status);
     const text = await res.text();
-    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-stop-circle"></i> Motor ${lastMotor} stopped — ESP: ${text}</div>`; // Styled message
+    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-stop-circle"></i> Motor ${lastMotor} stopped — ESP: ${text}</div>`;
     lastMotor = null;
     stopMotorBtn.style.display = 'none';
   } catch (err) {
     console.error(err);
-    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to stop motor.</div>`; // Styled message
+    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to stop motor.</div>`;
   } finally {
     stopMotorBtn.disabled = false;
   }
