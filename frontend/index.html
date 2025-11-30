@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalsConnect: Real-Time Health & Automated Dispensing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Base Styles and Colors */
+        :root {
+            --color-primary: #00bcd4; /* Cyan/Teal - Matches the inspiration image */
+            --color-secondary: #2ecc71; /* Green CTA */
+            --color-dark: #2c3e50;
+            --color-light: #ecf0f1;
+            --color-white: #ffffff;
+            --font-main: 'Roboto', sans-serif;
+        }
+
+        body { 
+            font-family: var(--font-main); 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--color-light); 
+            color: var(--color-dark); 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+
+        /* Nav Bar */
+        .navbar { 
+            background-color: var(--color-white); 
+            padding: 1em 4em; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .logo { 
+            font-size: 1.6em; 
+            font-weight: 700; 
+            text-decoration: none; 
+            color: var(--color-primary); 
+        }
+        .navbar a { 
+            color: var(--color-dark); 
+            text-decoration: none; 
+            margin-left: 25px; 
+            padding: 8px 15px; 
+            border-radius: 4px; 
+            transition: all 0.3s ease; 
+            font-weight: 500;
+        }
+        .navbar a:hover { 
+            background-color: var(--color-primary);
+            color: var(--color-white); 
+        }
+
+        /* 1. Hero Section (Top Banner) */
+        .hero { 
+            background-color: var(--color-primary); 
+            color: var(--color-white); 
+            padding: 6em 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5%;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 45%;
+            padding-left: 4em;
+        }
+        .hero h1 { 
+            font-size: 2.8em; 
+            margin-bottom: 10px; 
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .hero p { 
+            font-size: 1.1em; 
+            max-width: 500px; 
+            margin-bottom: 30px; 
+            opacity: 0.9;
+        }
+        .hero-cta-btn {
+            background-color: var(--color-secondary); 
+            color: var(--color-white);
+            border: none;
+            padding: 12px 30px; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            font-weight: 700; 
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); 
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        .hero-cta-btn:hover {
+            background-color: #27ae60;
+        }
+        .hero-image {
+            max-width: 40%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateY(-5deg) scale(1.05); /* 3D effect */
+        }
+
+        /* 2. Middle Section (Benefits & Images) */
+        .benefits-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6em 4em;
+            gap: 5%;
+            background-color: var(--color-white);
+        }
+        .benefits-image-stack {
+            max-width: 40%;
+            position: relative;
+        }
+        .benefits-image-stack img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .benefits-content {
+            max-width: 45%;
+        }
+        .benefits-content h2 {
+            font-size: 2em;
+            color: var(--color-dark);
+            margin-bottom: 25px;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--color-light);
+            transition: background-color 0.3s;
+        }
+        .benefit-item:hover {
+            background-color: #e0e6eb;
+        }
+        .benefit-item i {
+            font-size: 1.5em;
+            color: var(--color-primary);
+            margin-right: 15px;
+            padding-top: 5px;
+        }
+        .benefit-item h3 {
+            font-size: 1.1em;
+            margin: 0 0 5px 0;
+            color: var(--color-primary);
+        }
+        .benefit-item p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        /* 3. Global Coverage/Reliability Section */
+        .coverage-section {
+            background-color: var(--color-light);
+            padding: 4em 4em 6em 4em;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 5%;
+            align-items: flex-start;
+        }
+        .coverage-content {
+            text-align: left;
+            max-width: 35%;
+        }
+        .coverage-content h2 {
+            font-size: 2em;
+            color: var(--color-dark);
+            margin-bottom: 30px;
+        }
+        .coverage-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .coverage-item i {
+            font-size: 1.8em;
+            color: var(--color-primary);
+            margin-right: 15px;
+        }
+        .map-container {
+            max-width: 50%;
+            position: relative;
+            padding: 20px;
+            background: var(--color-white);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .map-container img {
+            width: 100%;
+            height: auto;
+            opacity: 0.9;
+        }
+
+        /* 4. How It Works (Step-by-Step) */
+        .steps-section {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 6em 4em;
+            text-align: center;
+        }
+        .steps-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+        }
+        .step-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+        }
+        .step-item {
+            max-width: 300px;
+            background-color: var(--color-white);
+            color: var(--color-dark);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            text-align: center;
+        }
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-secondary);
+            color: var(--color-white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            border: 4px solid var(--color-primary);
+        }
+        .step-item h3 {
+            margin-top: 20px;
+            color: var(--color-primary);
+        }
+        .step-item img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        .footer { 
+            background-color: var(--color-dark); 
+            color: var(--color-light); 
+            text-align: center; 
+            padding: 2em 0; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="index.html" class="logo">VitalsConnect</a>
+        <div id="auth-links">
+            <a href="signup.html">signup</a>
+            <a href="login.html" class="hero-cta-btn" style="background-color: #00bcd4;">Login</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Remote Health Monitoring and Instant Medicine: Never Wait for a Prescription Again.</h1>
+            <p>Introducing VitalsConnect: Your **real-time health monitoring system**. Using an ESP32, we provide remote diagnostics, AI prediction, and **automated medicine dispensing** for next-generation care.</p>
+            <a href="#how-it-works" class="hero-cta-btn">See the System in Action</a>
+        </div>
+        <img src="doctor_laptop.png" alt="Doctor reviewing patient data on a laptop" class="hero-image">
+    </div>
+
+    ---
+
+    <div class="benefits-section">
+        <div class="benefits-image-stack">
+            <img src="atm.png" alt="3D Image of Smart Kiosk and Mobile Dashboard">
+        </div>
+        
+        <div class="benefits-content">
+            <h2>Doctor, Focus on Care – Let the System Handle the Vitals!</h2>
+            <p>VitalsConnect dramatically improves remote patient management by providing actionable data and control.</p>
+            
+            <div class="benefit-item">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <h3>Automated Real-Time Monitoring</h3>
+                    <p>Eliminates constant manual vital sign checks (SpO₂, HR, Temp), freeing up physician time.</p>
+                </div>
+            </div>
+            
+            <div class="benefit-item">
+                <i class="fas fa-brain"></i>
+                <div>
+                    <h3>AI-Powered Preliminary Prediction</h3>
+                    <p>Reduces diagnostic time with rapid, AI-driven pre-analysis of patient condition and risk factors.</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <i class="fas fa-truck-moving"></i>
+                <div>
+                    <h3>Remote Actuator Control (Motor A/B)</h3>
+                    <p>Allows secured, remote activation of Motor A or Motor B for automated medicine dispensing or critical equipment action.</p>
+                </div>
+            </div>
+            
+            <div class="benefit-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h3>Secure & Compliant Record Keeping</h3>
+                    <p>Maintains comprehensive, encrypted patient history and logs for every transaction and vital reading.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    ---
+
+    <div class="coverage-section">
+        <div class="coverage-content">
+            <h2>The Power of Wide-Ranging, Reliable Deployment</h2>
+            <p>Our ESP32-based architecture ensures the VitalsConnect system is **deployable anywhere**, providing high-accuracy monitoring even in remote, underserved areas.</p>
+            
+            <div class="coverage-item">
+                <i class="fas fa-satellite-dish"></i>
+                <div>
+                    <h3 style="margin-top:0; color:var(--color-dark);">Edge Computing Ready</h3>
+                    <p>Efficient data capture via the ESP32 ensures low bandwidth usage and fast response times.</p>
+                </div>
+            </div>
+            
+            <div class="coverage-item">
+                <i class="fas fa-lock"></i>
+                <div>
+                    <h3 style="margin-top:0; color:var(--color-dark);">Secure & Reliable Data Transfer</h3>
+                    <p>Vitals are securely transmitted to the web dashboard, ensuring data integrity and privacy.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <img src="global.png" alt="Abstract map highlighting global health coverage">
+        </div>
+    </div>
+
+    ---
+
+    <div class="steps-section" id="how-it-works">
+        <h2>From Vitals to Care: The 3-Step VitalsConnect Flow</h2>
+        <div class="step-container">
+            
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <h3>Real-Time Vitals Capture</h3>
+                <p>**ESP32 & Sensors:** SpO₂, Heart Rate, and Temperature are continuously read and uploaded to the cloud.</p>
+                <img src="machine.png" alt="Screen showing live vital signs">
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <h3>Diagnosis & Approval</h3>
+                <p>**Web Dashboard & AI:** Data is displayed instantly. The AI predicts a condition, and a doctor reviews for final action.</p>
+                <img src="data.png" alt="Doctor's review screen with AI prediction">
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <h3>Automated Action/Dispensing</h3>
+                <p>**Motors A/B:** Upon doctor approval, the system triggers the appropriate actuator (Motor A or Motor B) for medicine or device activation.</p>
+                <img src="medi.png" alt="Medicine dispensing slot or actuator activation confirmation">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 VitalsConnect Project. Smart Health Monitoring for a Connected World.</p>
+    </div>
+
+</body>
+</html>

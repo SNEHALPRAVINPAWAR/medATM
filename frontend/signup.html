@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - VitalsConnect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Base Styles and Colors - Matching VitalsConnect Homepage */
+        :root {
+            --color-primary: #00bcd4; /* Cyan/Teal */
+            --color-secondary: #2ecc71; /* Green CTA */
+            --color-dark: #2c3e50;
+            --color-light: #eef2f7; /* Soft light background */
+            --color-white: #ffffff;
+            --font-main: 'Roboto', sans-serif;
+        }
+
+        body { 
+            font-family: var(--font-main); 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--color-light); /* Consistent background with homepage */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            color: var(--color-dark);
+            background: linear-gradient(135deg, var(--color-light) 0%, #d4e7f0 100%); /* Subtle gradient for depth */
+        }
+
+        .signup-container { 
+            background-color: var(--color-white); 
+            padding: 40px 50px; /* Increased padding */
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Stronger, modern shadow */
+            width: 100%; 
+            max-width: 450px; /* Consistent width */
+            animation: fadeIn 0.8s ease-out; /* Simple fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { 
+            text-align: center; 
+            color: var(--color-primary); 
+            margin-bottom: 35px; /* More spacing */
+            font-size: 2em; /* Larger title */
+            font-weight: 700;
+        }
+
+        .form-group { 
+            margin-bottom: 25px; /* More spacing between groups */
+        }
+
+        .form-group label { 
+            display: block; 
+            margin-bottom: 10px; /* More spacing */
+            font-weight: 500; /* Medium weight */
+            color: var(--color-dark); 
+            font-size: 1.05em;
+        }
+
+        .form-group input { 
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 14px 12px; /* Increased padding for input fields */
+            border: 1px solid #ced4da; 
+            border-radius: 8px; /* Slightly more rounded inputs */
+            font-size: 1em; 
+            transition: all 0.3s ease;
+            background-color: #f8f9fa; /* Slightly off-white input background */
+        }
+
+        .form-group input:focus { 
+            border-color: var(--color-primary); 
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.25); /* Cyan glow focus */
+            background-color: var(--color-white);
+        }
+
+        .btn-primary { 
+            width: 100%; 
+            padding: 15px; /* Larger button */
+            background-color: var(--color-primary); 
+            color: var(--color-white); 
+            border: none; 
+            border-radius: 8px; /* Rounded button */
+            font-size: 1.15em; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3); /* Button shadow */
+        }
+
+        .btn-primary:hover { 
+            background-color: #0097a7; /* Darker cyan on hover */
+            box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
+            transform: translateY(-2px); /* Subtle lift effect */
+        }
+
+        .link-text { 
+            text-align: center; 
+            margin-top: 30px; /* More spacing */
+            font-size: 0.95em;
+            color: #6c757d; /* Softer text color */
+        }
+
+        .link-text a { 
+            color: var(--color-primary); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+        .link-text a:hover { 
+            color: #007987; /* Darker cyan on hover */
+            text-decoration: underline; 
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2><i class="fas fa-user-plus" style="margin-right: 10px;"></i> Doctor Sign Up</h2>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" required placeholder="Dr. John Doe">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required placeholder="your.email@example.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-primary">Create Account</button>
+        </form>
+        <div class="link-text">
+            Already have an account? <a href="login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000/api/auth'; // Backend auth endpoint
+
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message + '\nRedirecting to login...');
+                    // Store token and user info (optional for signup, but consistent)
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userName', data.user.name);
+                    window.location.href = 'login.html'; // Redirect to login page
+                } else {
+                    alert('Sign Up Failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error during signup:', error);
+                alert('An error occurred during sign up. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

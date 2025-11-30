@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VitalsConnect — Doctor Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* 🎨 VitalsConnect Color Palette */
+:root{
+    --color-primary: #00bcd4; /* Cyan/Teal - ACCENT */
+    --color-secondary: #2ecc71; /* Green CTA/OK */
+    --color-dark: #2c3e50; /* Primary Text/Muted */
+    --color-light: #eef2f7; /* Background */
+    --color-card: #ffffff; /* Card Background */
+    --color-danger: #e74c3c; /* Red Danger */
+    --color-ok: var(--color-secondary);
+    --color-muted: #7f8c8d; /* Muted text */
+    --font-main: 'Roboto', sans-serif;
+}
+/* Global Reset and Body */
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:var(--font-main);
+    background:var(--color-light);
+    color:var(--color-dark);
+    line-height: 1.5;
+}
+
+/* 💻 Header (Sleek & Modern) */
+header{
+    background:var(--color-card);
+    border-bottom:1px solid #e6e9ee;
+    padding:14px 25px; /* Increased padding */
+    display:flex;
+    align-items:center;
+    gap:20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.brand{
+    font-weight:700;
+    font-size: 1.3em;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+}
+nav a{
+    color:var(--color-muted);
+    text-decoration:none;
+    margin-right:18px;
+    font-weight:500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+nav a.active{
+    color:var(--color-primary);
+    background: rgba(0, 188, 212, 0.1);
+    font-weight: 700;
+}
+nav a:hover:not(.active) {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+/* Main Layout */
+main{
+    max-width:1100px; /* Increased max width for more space */
+    margin:35px auto; /* Increased margin */
+    padding:0 25px;
+}
+.grid{
+    display:grid;
+    grid-template-columns: 1fr 400px; /* Slightly wider right column */
+    gap:30px; /* Increased gap */
+}
+.card{
+    background:var(--color-card);
+    border-radius:12px; /* Smoother corners */
+    padding:25px; /* Increased padding */
+    box-shadow:0 10px 30px rgba(12,20,36,0.08); /* Modern, soft shadow */
+    transition: box-shadow 0.3s;
+}
+.card:hover {
+    box-shadow:0 12px 35px rgba(12,20,36,0.12);
+}
+
+/* Headings and Typography */
+h2{
+    margin:0 0 15px;
+    font-size:1.4em;
+    font-weight: 700;
+    color: var(--color-primary);
+    border-bottom: 2px solid rgba(0, 188, 212, 0.1);
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+label{
+    display:block;
+    font-size:14px;
+    color:var(--color-dark); /* Darker label text */
+    margin-top:18px; /* Increased margin */
+    font-weight: 500;
+}
+
+/* Form Elements */
+input[type="text"], input[type="number"], select{
+    width:100%;
+    padding:12px; /* Increased padding */
+    border-radius:8px;
+    border:1px solid #dcdfe4;
+    font-size:1em;
+    margin-top: 6px;
+    background-color: #f8f9fb;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+input:focus, select:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+    background-color: var(--color-white);
+}
+
+/* Layout Helpers */
+.row{display:flex;gap:15px}
+.btn{
+    display:inline-block;
+    padding:12px 18px;
+    border-radius:8px;
+    border:none;
+    background:var(--color-primary);
+    color:var(--color-card);
+    font-weight:600;
+    cursor:pointer;
+    margin-top:18px; /* Increased margin */
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
+}
+.btn:hover:not(:disabled){
+    background: #0097a7;
+    transform: translateY(-1px);
+}
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.btn.secondary{
+    background:#e6f9fc;
+    color:var(--color-primary);
+    font-weight:700;
+    box-shadow: none;
+}
+.btn.secondary:hover:not(:disabled) {
+    background: #cff6ff;
+}
+.btn.danger{
+    background:var(--color-danger);
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+.btn.danger:hover:not(:disabled) {
+    background: #c0392b;
+}
+
+.small{font-size:13px;color:var(--color-muted);margin-top:10px}
+.stat{font-size:24px;font-weight:700;color:var(--color-dark);}
+.center{display:flex;align-items:center;gap:8px}
+.spacer{height:15px}
+
+/* Snapshot Results */
+.result-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #eee;
+}
+.result-row:last-of-type {
+    border-bottom: none;
+}
+#snapshot {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#snapshot .muted {
+    font-size: 1.1em;
+    color: var(--color-muted);
+}
+#snapshot-data {
+    margin-top:20px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+.vitals-box {
+    text-align: center;
+}
+.vitals-box .stat {
+    display: block;
+    margin-top: 4px;
+    font-size: 2.5em;
+    color: var(--color-primary);
+}
+.vitals-box .muted {
+    font-size: 0.9em;
+}
+
+/* Decision and Motor Control */
+#decision {
+    padding-top: 15px;
+}
+#diseaseLabel, #motorLabel {
+    font-weight: 800 !important;
+    font-size: 1.5em !important;
+    margin-top: 6px !important;
+    color: var(--color-dark);
+}
+.status{
+    padding:10px 15px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight: 500;
+    text-align: center;
+}
+.status.ok{
+    background:rgba(46, 204, 113, 0.1);
+    color:var(--color-ok);
+}
+.status.err{
+    background:rgba(231, 76, 60, 0.1);
+    color:var(--color-danger);
+}
+.status.loading {
+    background: rgba(0, 188, 212, 0.1);
+    color: var(--color-primary);
+}
+
+/* Table and Footer */
+footer{
+    max-width:1100px;
+    margin:25px auto;
+    color:var(--color-muted);
+    font-size:13px;
+    padding:0 25px;
+    text-align: center;
+}
+.tbl{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    font-size:13px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.tbl th, .tbl td{
+    border:none;
+    padding:10px;
+    text-align:left;
+}
+.tbl th {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 600;
+}
+.tbl tr:nth-child(even) {
+    background-color: #f9fbfd;
+}
+.tbl td {
+    border-bottom: 1px solid #e3e6ee;
+}
+.actions{display:flex;gap:10px}
+</style>
+</head>
+<body>
+<header>
+    <div class="brand"><i class="fas fa-stethoscope"></i> VitalsConnect</div>
+    <nav style="margin-left:8px"><a class="active" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></nav>
+</header>
+
+<main>
+    <div class="grid">
+        <section class="card">
+            <h2><i class="fas fa-user-injured" style="margin-right: 10px;"></i> Patient Info & Control</h2>
+
+            <label for="pname">Full Name</label>
+            <input id="pname" type="text" placeholder="e.g. Rahul Sharma" />
+
+            <div class="row">
+                <div style="flex:1">
+                    <label for="page">Age</label>
+                    <input id="page" type="number" min="0" max="120" placeholder="Age" />
+                </div>
+                <div style="width:140px">
+                    <label for="pgender">Gender</label>
+                    <select id="pgender">
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="pnumber">Phone Number</label>
+            <input id="pnumber" type="text" placeholder="+91 9XXXXXXXXX" />
+
+            <div class="spacer"></div>
+
+            <div class="actions">
+                <button id="startBtn" class="btn"><i class="fas fa-sync-alt"></i> START (Fetch once)</button>
+                <button id="repeatBtn" class="btn secondary" style="display:none"><i class="fas fa-redo"></i> Repeat Session</button>
+                <button id="exportBtn" class="btn secondary" title="Export logged sessions"><i class="fas fa-file-csv"></i> Export CSV</button>
+            </div>
+
+            <div id="formMsg" class="small">Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor/action.</div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 10px; font-size: 1.1em; color: var(--color-dark); font-weight: 600;"><i class="fas fa-history"></i> Session Log</h3>
+            <table class="tbl" id="logTable" style="display:none">
+                <thead><tr><th>#</th><th>Name</th><th>Age</th><th>Phone</th><th>Disease</th><th>Motor</th><th>Time</th></tr></thead>
+                <tbody id="logBody"></tbody>
+            </table>
+        </section>
+
+        <aside class="card">
+            <h2><i class="fas fa-heartbeat" style="margin-right: 10px;"></i> Real-Time Snapshot</h2>
+
+            <div id="snapshot" style="min-height:160px">
+                <div style="text-align: center;">
+                    <i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i>
+                    <div class="muted">Click **START** to fetch vitals from the ESP32 Kiosk.</div>
+                </div>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div id="decision" style="display:none">
+                <h3 style="color: var(--color-dark); margin: 15px 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 8px;"><i class="fas fa-clipboard-check"></i> AI Prediction & Action</h3>
+                <div class="result-row">
+                    <div>
+                        <div class="muted">Predicted Condition/Disease</div>
+                        <div id="diseaseLabel" style="font-weight:800;font-size:16px;margin-top:4px; color: var(--color-primary);">-</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="muted">Suggested Motor Action</div>
+                        <div id="motorLabel" style="font-weight:800;font-size:16px;margin-top:4px; color: var(--color-dark);">-</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px">
+                    <button id="motorActionBtn" class="btn" style="width:100%"></button>
+                    <button id="stopMotorBtn" class="btn danger" style="width:100%;display:none;margin-top:10px"><i class="fas fa-power-off"></i> Stop Motor</button>
+                </div>
+
+                <div id="actionStatus" style="margin-top:15px"></div>
+            </div>
+
+        </aside>
+    </div>
+</main>
+
+<footer>VitalsConnect Dashboard • Real-time health monitoring & automated dispensing system • Local CSV log enabled</footer>
+
+<script>
+/*
+  CHANGE ONLY THIS: set your ESP32 IP below (static IP recommended)
+*/
+const espIP = "192.168.137.246"; // <-- set your ESP IP here (http://espIP/data etc)
+
+/* ---------- Decision rules ----------
+   Order matters: first rule matched is returned.
+   - SpO2 < 92 => Hypoxia => Motor A
+   - Temp > 38 => Fever => Motor B
+   - HeartRate > 110 => Tachycardia => Motor A
+   - Otherwise Normal => no motor
+*/
+function decideDisease(data){
+  if (data.spo2 != null && data.spo2 < 92) return {disease:"Hypoxia", motor:"A"};
+  if (data.temperature != null && data.temperature > 38.0) return {disease:"Fever", motor:"B"};
+  if (data.heartrate != null && data.heartrate > 110) return {disease:"Tachycardia", motor:"A"};
+  return {disease:"Normal", motor:"B"}; // Changed default motor for 'Normal' to 'B' to show the option
+}
+
+/* ---------- UI bindings ---------- */
+const startBtn = document.getElementById('startBtn');
+const repeatBtn = document.getElementById('repeatBtn');
+const exportBtn = document.getElementById('exportBtn');
+const snapshotDiv = document.getElementById('snapshot');
+const decisionDiv = document.getElementById('decision');
+const diseaseLabel = document.getElementById('diseaseLabel');
+const motorLabel = document.getElementById('motorLabel');
+const motorActionBtn = document.getElementById('motorActionBtn');
+const stopMotorBtn = document.getElementById('stopMotorBtn');
+const actionStatus = document.getElementById('actionStatus');
+const formMsg = document.getElementById('formMsg');
+const logTable = document.getElementById('logTable');
+const logBody = document.getElementById('logBody');
+
+let latestSnapshot = null;
+let lastMotor = null;
+let sessions = []; // local log
+
+function getForm(){
+  return {
+    name: document.getElementById('pname').value.trim(),
+    age: document.getElementById('page').value.trim(),
+    gender: document.getElementById('pgender').value,
+    phone: document.getElementById('pnumber').value.trim()
+  };
+}
+function validateForm(){
+  const f = getForm();
+  if (!f.name) return "Enter patient name.";
+  if (!f.age || isNaN(f.age) || f.age <= 0) return "Enter valid age.";
+  if (!f.gender) return "Select gender.";
+  if (!f.phone) return "Enter phone number.";
+  return null;
+}
+
+function renderSnapshot(data){
+  latestSnapshot = data;
+  snapshotDiv.innerHTML = `
+    <div class="muted">Data fetched from ESP **${espIP}** at ${new Date().toLocaleTimeString()}</div>
+    <div id="snapshot-data">
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-tint"></i> SpO₂</span>
+            <span class="stat">${data.spo2 === null ? '--' : data.spo2 + ' %'}</span>
+        </div>
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-thermometer-half"></i> Temp.</span>
+            <span class="stat">${data.temperature === null ? '--' : data.temperature.toFixed(1) + ' °C'}</span>
+        </div>
+        <div class="vitals-box">
+            <span class="muted"><i class="fas fa-heart"></i> Heart Rate</span>
+            <span class="stat">${data.heartrate === null ? '--' : data.heartrate + ' bpm'}</span>
+        </div>
+    </div>
+  `;
+}
+
+function showDecision(dec){
+  decisionDiv.style.display = 'block';
+  diseaseLabel.textContent = dec.disease;
+  motorLabel.textContent = dec.motor ? `Motor ${dec.motor} (Action)` : 'No Action';
+  
+  // Style the disease label based on risk
+  diseaseLabel.style.color = (dec.disease === 'Normal') ? var_color_ok : var_color_danger;
+  
+  if (dec.motor) {
+    motorActionBtn.style.display = 'inline-block';
+    motorActionBtn.disabled = false;
+    motorActionBtn.innerHTML = `<i class="fas fa-bolt"></i> Activate Motor ${dec.motor}`;
+    motorActionBtn.dataset.motor = dec.motor;
+  } else {
+    motorActionBtn.style.display = 'none';
+  }
+}
+
+async function fetchOnce(){
+  actionStatus.innerHTML = '';
+  const v = validateForm();
+  if (v) { alert(v); return; }
+
+  startBtn.disabled = true;
+  startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+  formMsg.innerHTML = '<div class="status loading">Fetching a single snapshot from ESP — please wait...</div>';
+
+  try {
+    const res = await fetch(`http://${espIP}/data`, {cache:'no-store'});
+    if (!res.ok) throw new Error('Network error: ' + res.status);
+    const payload = await res.json();
+
+    // normalize payload keys: expect spo2, temperature, heartrate OR bpm etc.
+    const data = {
+      spo2: payload.spo2 === undefined ? (payload.SpO2 ?? null) : Number(payload.spo2),
+      temperature: payload.temperature === undefined ? (payload.temp ?? null) : Number(payload.temperature),
+      heartrate: payload.heartrate === undefined ? (payload.heartRate ?? payload.bpm ?? null) : Number(payload.heartrate)
+    };
+
+    // allow nulls if not valid
+    for (let k of ['spo2','temperature','heartrate']) if (isNaN(data[k])) data[k] = null;
+
+    renderSnapshot(data);
+    const dec = decideDisease(data);
+    showDecision(dec);
+
+    // log session (local)
+    const form = getForm();
+    const session = {
+      name: form.name, age: form.age, phone: form.phone, gender: form.gender,
+      disease: dec.disease, motor: dec.motor || '-', time: (new Date()).toLocaleString(),
+      spo2: data.spo2, temp: data.temperature, hr: data.heartrate
+    };
+    sessions.push(session);
+    appendLogRow(session);
+    logTable.style.display = sessions.length ? 'table' : 'none';
+
+    // UI state
+    startBtn.style.display = 'none';
+    repeatBtn.style.display = 'inline-block';
+    formMsg.innerHTML = '<div class="status ok"><i class="fas fa-check-circle"></i> Data received. Review prediction and take motor action.</div>';
+
+  } catch (err) {
+    console.error(err);
+    alert('Failed to fetch data from ESP. Check ESP IP ('+espIP+') and network.');
+    formMsg.innerHTML = '<div class="status err"><i class="fas fa-times-circle"></i> Fetch failed. Check ESP IP and network.</div>';
+  } finally {
+    startBtn.disabled = false;
+    startBtn.innerHTML = '<i class="fas fa-sync-alt"></i> START (Fetch once)';
+  }
+}
+
+startBtn.addEventListener('click', fetchOnce);
+
+repeatBtn.addEventListener('click', ()=>{
+  startBtn.style.display = 'inline-block';
+  repeatBtn.style.display = 'none';
+  decisionDiv.style.display = 'none';
+  snapshotDiv.innerHTML = `<div style="text-align: center;"><i class="fas fa-thermometer-half fa-3x" style="color: var(--color-muted); margin-bottom: 15px;"></i><div class="muted">Click **START** to fetch vitals from the ESP32 Kiosk.</div></div>`;
+  actionStatus.innerHTML = '';
+  formMsg.innerHTML = 'Fill form, then click **START**. Dashboard will fetch one snapshot and suggest motor/action.';
+});
+
+// motor action
+motorActionBtn.addEventListener('click', async ()=>{
+  const motor = motorActionBtn.dataset.motor;
+  if (!motor) return;
+  motorActionBtn.disabled = true;
+  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Sending command to Motor ${motor}...</div>`;
+  try {
+    const res = await fetch(`http://${espIP}/motor${motor}`);
+    if (!res.ok) throw new Error('Motor request failed: ' + res.status);
+    const text = await res.text();
+    lastMotor = motor;
+    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-check-circle"></i> Motor ${motor} started — ESP: ${text}</div>`;
+    stopMotorBtn.style.display = 'block';
+  } catch (err) {
+    console.error(err);
+    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to start motor ${motor}. Check network / ESP.</div>`;
+  } finally {
+    motorActionBtn.disabled = false;
+  }
+});
+
+// stop motor
+stopMotorBtn.addEventListener('click', async ()=>{
+  if (!lastMotor) return;
+  stopMotorBtn.disabled = true;
+  actionStatus.innerHTML = `<div class="status loading"><i class="fas fa-circle-notch fa-spin"></i> Stopping Motor ${lastMotor}...</div>`;
+  try {
+    const res = await fetch(`http://${espIP}/stop`);
+    if (!res.ok) throw new Error('Stop request failed: ' + res.status);
+    const text = await res.text();
+    actionStatus.innerHTML = `<div class="status ok"><i class="fas fa-stop-circle"></i> Motor ${lastMotor} stopped — ESP: ${text}</div>`;
+    lastMotor = null;
+    stopMotorBtn.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+    actionStatus.innerHTML = `<div class="status err"><i class="fas fa-exclamation-triangle"></i> Failed to stop motor.</div>`;
+  } finally {
+    stopMotorBtn.disabled = false;
+  }
+});
+
+// logging helpers & CSV export
+function appendLogRow(s){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${logBody.children.length+1}</td>
+    <td>${escapeHtml(s.name)}</td>
+    <td>${escapeHtml(s.age)}</td>
+    <td>${escapeHtml(s.phone)}</td>
+    <td>${escapeHtml(s.disease)}</td>
+    <td>${escapeHtml(s.motor)}</td>
+    <td>${escapeHtml(s.time)}</td>`;
+  logBody.prepend(tr); // newest first
+}
+
+exportBtn.addEventListener('click', ()=>{
+  if (!sessions.length) { alert('No sessions to export'); return; }
+  const header = ['name','age','phone','gender','disease','motor','time','spo2','temp','hr'];
+  const rows = sessions.map(s => header.map(h => JSON.stringify(s[h] ?? '')).join(','));
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `healthdash_sessions_${(new Date()).toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+
+// small util
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+</script>
+</body>
+</html>

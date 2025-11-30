@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - History</title>
+    <style>
+        /* --- General Reset & Body Styles --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #343a40;
+            line-height: 1.6;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            background-color: #007bff; /* Primary blue */
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .nav-links a,
+        .navbar .nav-links span {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: #cce5ff; /* Lighter blue on hover */
+        }
+
+        .navbar .nav-links #logout-btn {
+            background-color: #dc3545; /* Red for logout */
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar .nav-links #logout-btn:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+        /* --- Container & Main Content Styles --- */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* --- Search Bar Styles --- */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 70%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .search-button {
+            padding: 0.75rem 1.25rem;
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* --- Table Styles --- */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6; /* Light gray border */
+            text-align: left;
+        }
+
+        .history-table th {
+            background-color: #e9ecef; /* Lighter gray for headers */
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .history-table tr:nth-child(even) {
+            background-color: #f2f2f2; /* Zebra striping */
+        }
+
+        .history-table tr:hover {
+            background-color: #e2f0ff; /* Light blue on hover for rows */
+        }
+
+        /* --- Delete Button in Table --- */
+        .delete-btn {
+            background-color: #dc3545; /* Red for delete */
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .navbar .nav-links {
+                margin-top: 1rem;
+            }
+            .navbar .nav-links a,
+            .navbar .nav-links span {
+                margin: 0 0.5rem;
+            }
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            .search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .search-input {
+                width: 90%;
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+            .search-button {
+                width: 90%;
+                border-radius: 5px;
+            }
+
+            .history-table, .history-table thead, .history-table tbody, .history-table th, .history-table td, .history-table tr {
+                display: block;
+            }
+            .history-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            .history-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid #dee2e6;
+                border-radius: 5px;
+            }
+            .history-table td {
+                border: none;
+                border-bottom: 1px solid #dee2e6;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            .history-table td:before {
+                position: absolute;
+                top: 0;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #007bff;
+            }
+            /* Labeling the cells (responsive table headers) */
+            .history-table td:nth-of-type(1):before { content: "Date:"; }
+            .history-table td:nth-of-type(2):before { content: "Patient:"; }
+            .history-table td:nth-of-type(3):before { content: "Age:"; }
+            .history-table td:nth-of-type(4):before { content: "Kiosk ID:"; }
+            .history-table td:nth-of-type(5):before { content: "BPM:"; }
+            .history-table td:nth-of-type(6):before { content: "SpO₂:"; }
+            .history-table td:nth-of-type(7):before { content: "Temp (°C):"; }
+            .history-table td:nth-of-type(8):before { content: "Predicted:"; }
+            .history-table td:nth-of-type(9):before { content: "Approved:"; }
+            .history-table td:nth-of-type(10):before { content: "Status:"; }
+            .history-table td:nth-of-type(11):before { content: "Actions:"; } /* New label for actions */
+
+            .delete-btn {
+                width: 100%; /* Make button full width in responsive view */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="logo">Smart Medical Kiosk</a>
+        <div class="nav-links">
+            <span id="welcome-message"></span>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="history.html">History</a>
+            <a href="#" id="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Diagnosis History</h1>
+        <div id="message-container" class="message info" style="display: none;"></div>
+
+        <!-- Search Bar Section -->
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Search by patient name, disease, or kiosk ID...">
+            <button id="search-button" class="search-button">Search</button>
+        </div>
+
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Kiosk ID</th>
+                    <th>Avg. BPM</th>
+                    <th>Avg. SpO₂</th>
+                    <th>Avg. Temp (°C)</th>
+                    <th>Predicted Disease</th>
+                    <th>Approved Disease</th>
+                    <th>Status</th>
+                    <th>Actions</th> <!-- New column for delete button -->
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                <!-- History rows will be inserted here by JavaScript -->
+                <tr><td colspan="11" style="text-align: center;">Loading history...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api'; // Make sure this matches your backend URL
+        const historyTableBody = document.getElementById('history-table-body');
+        const welcomeMessageSpan = document.getElementById('welcome-message');
+        const logoutBtn = document.getElementById('logout-btn');
+        const messageContainer = document.getElementById('message-container');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        // --- Helper Functions ---
+        function displayMessage(type, text) {
+            messageContainer.className = `message ${type}`;
+            messageContainer.textContent = text;
+            messageContainer.style.display = 'block';
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 5000); // Hide after 5 seconds
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function getAverageSensorData(sensorDataArray) {
+            if (!sensorDataArray || sensorDataArray.length === 0) {
+                return { avgBPM: 'N/A', avgSpO2: 'N/A', avgTemp: 'N/A' };
+            }
+
+            const totalBPM = sensorDataArray.reduce((sum, d) => sum + (d.bpm || 0), 0);
+            const totalSpO2 = sensorDataArray.reduce((sum, d) => sum + (d.spo2 || 0), 0);
+            const totalTemp = sensorDataArray.reduce((sum, d) => sum + (d.temperature || 0), 0);
+            const count = sensorDataArray.length;
+
+            return {
+                avgBPM: (totalBPM / count).toFixed(0),
+                avgSpO2: (totalSpO2 / count).toFixed(1),
+                avgTemp: (totalTemp / count).toFixed(1)
+            };
+        }
+
+        // --- Authentication & Navigation Logic ---
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userName = localStorage.getItem('userName');
+
+            if (!token || !userName) {
+                // Not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return false;
+            }
+
+            welcomeMessageSpan.textContent = `Welcome, Dr. ${userName}`;
+            return true;
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userName');
+            window.location.href = 'index.html'; // Go to home page after logout
+        }
+
+        // --- Fetch History Data (with search functionality) ---
+        async function fetchHistory(searchQuery = '') {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                displayMessage('error', 'Authentication token missing. Please log in.');
+                return;
+            }
+
+            try {
+                // Add search query as a URL parameter if it exists
+                const url = searchQuery ? `${API_BASE_URL}/doctor/history?search=${encodeURIComponent(searchQuery)}` : `${API_BASE_URL}/doctor/history`;
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch history');
+                }
+
+                renderHistory(data);
+
+            } catch (error) {
+                console.error('Error fetching history:', error);
+                displayMessage('error', `Error fetching history: ${error.message}`);
+                historyTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: red;">${error.message}</td></tr>`;
+            }
+        }
+
+        function renderHistory(historyData) {
+            historyTableBody.innerHTML = ''; // Clear loading message
+
+            if (historyData.length === 0) {
+                historyTableBody.innerHTML = '<tr><td colspan="11" style="text-align: center;">No diagnosis history found.</td></tr>';
+                return;
+            }
+
+            historyData.forEach(record => {
+                const { avgBPM, avgSpO2, avgTemp } = getAverageSensorData(record.sensorData);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(record.createdAt)}</td>
+                    <td>${record.patientId ? record.patientId.name : 'N/A'}</td>
+                    <td>${record.patientId ? record.patientId.age : 'N/A'}</td>
+                    <td>${record.kioskId}</td>
+                    <td>${avgBPM}</td>
+                    <td>${avgSpO2}</td>
+                    <td>${avgTemp}</td>
+                    <td>${record.predictedDisease}</td>
+                    <td>${record.approvedDisease}</td>
+                    <td>${record.status.replace(/_/g, ' ')}</td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteRecord('${record._id}')">Delete</button>
+                    </td>
+                `;
+                historyTableBody.appendChild(row);
+            });
+        }
+
+        // --- Search Functionality ---
+        function performSearch() {
+            const query = searchInput.value.trim();
+            fetchHistory(query);
+        }
+
+        // --- Delete Functionality ---
+        async function deleteRecord(recordId) {
+            if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                displayMessage('error', 'Authentication token missing. Please log in.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctor/history/${recordId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to delete record');
+                }
+
+                displayMessage('success', data.message || 'Record deleted successfully!');
+                fetchHistory(); // Re-fetch and re-render the history after deletion
+
+            } catch (error) {
+                console.error('Error deleting record:', error);
+                displayMessage('error', `Error deleting record: ${error.message}`);
+            }
+        }
+
+
+        // --- Event Listeners and Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                fetchHistory(); // Initial fetch of all history
+            }
+            logoutBtn.addEventListener('click', handleLogout);
+
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
